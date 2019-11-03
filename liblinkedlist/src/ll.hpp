@@ -5,12 +5,23 @@
 namespace cs126linkedlist {
     template<typename ElementType>
     LinkedList<ElementType>::LinkedList() {
-
+        this->size = 0;
+        this->empty = true;
+        this->begin() = NULL;
+        this->begin() = NULL;
     }
 
     template<typename ElementType>
     LinkedList<ElementType>::LinkedList(const std::vector<ElementType> &values) {
-
+        this->size = values.size();
+        LinkedListNode* head = new LinkedListNode;
+        head->data = values[0];
+        head->next = new LinkedListNode;
+        this->begin() = head;
+        this->begin() = head;
+        for(int i = 1; i < values.size(); i++){
+            push_back(values[i]);
+        }
     }
 
     // Copy constructor
@@ -28,7 +39,6 @@ namespace cs126linkedlist {
     // Destructor
     template<typename ElementType>
     LinkedList<ElementType>::~LinkedList() {
-
     }
 
     // Copy assignment operator
@@ -158,4 +168,5 @@ namespace cs126linkedlist {
     typename LinkedList<ElementType>::const_iterator LinkedList<ElementType>::end() const {
 
     }
+
 }

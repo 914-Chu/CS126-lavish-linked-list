@@ -1,4 +1,5 @@
-add_executable(liblinkedlist-test main.cpp)
+add_executable(liblinkedlist-test main.cpp lltest.cpp)
+include_directories(../src/)
 target_include_directories(liblinkedlist-test PRIVATE ./)
 
 target_link_libraries(liblinkedlist-test)

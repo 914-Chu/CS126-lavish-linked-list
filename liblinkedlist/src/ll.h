@@ -39,6 +39,12 @@ namespace cs126linkedlist {
         void RemoveOdd();                           // remove the odd elements from the list 0 indexed
         bool operator==(const LinkedList<ElementType> &rhs) const;
 
+        //Linked List Node
+        struct LinkedListNode {
+            ElementType data;
+            LinkedListNode* next;
+        };
+
         // iterator
         class iterator : std::iterator<std::forward_iterator_tag, ElementType> {
             LinkedListNode *current_;
