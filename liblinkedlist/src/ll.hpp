@@ -8,7 +8,6 @@ namespace cs126linkedlist {
         this->size = 0;
         this->empty = true;
         this->begin() = NULL;
-        this->begin() = NULL;
     }
 
     template<typename ElementType>
@@ -17,7 +16,6 @@ namespace cs126linkedlist {
         LinkedListNode* head = new LinkedListNode;
         head->data = values[0];
         head->next = new LinkedListNode;
-        this->begin() = head;
         this->begin() = head;
         for(int i = 1; i < values.size(); i++){
             push_back(values[i]);
@@ -55,12 +53,18 @@ namespace cs126linkedlist {
 
     template<typename ElementType>
     void LinkedList<ElementType>::push_front(ElementType value) {
-
+        LinkedListNode temp = new LinkedListNode;
+        temp.data = value;
+        temp.next = this->begin();
+        this->begin() = temp;
     }
 
     template<typename ElementType>
     void LinkedList<ElementType>::push_back(ElementType value) {
-
+        LinkedListNode temp = new LinkedListNode;
+        temp.data = value;
+        temp.next = this->end();
+        this->end() = temp;
     }
 
     template<typename ElementType>
