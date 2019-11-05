@@ -25,6 +25,11 @@ namespace cs126linkedlist {
         next_ = next;
     }
 
+    template <typename ElementType>
+    bool LinkedListNode<ElementType>::operator != (const LinkedListNode<ElementType> &node) const {
+        return data_ != node.data_;
+    }
+
     template<typename ElementType>
     LinkedList<ElementType>::LinkedList() {
         size_ = 0;
@@ -224,7 +229,16 @@ namespace cs126linkedlist {
         if (size_ != rhs.size()){
             return false;
         }else if(head_ == NULL && rhs.front() == NULL) {
+            LinkedListNode<ElementType> *this_list = head_;
 
+            const_iterator other_list = rhs.begin();
+            while(this_list != NULL){
+                if(this_list != other_list){
+                    return false;
+                }
+                this_list = this_list->next_;
+                other_list++;
+            }
         }
     }
 
@@ -240,7 +254,7 @@ namespace cs126linkedlist {
 
     template<typename ElementType>
     ElementType &LinkedList<ElementType>::iterator::operator*() const {
-
+        return current_->data_;
     }
 
     template<typename ElementType>
@@ -250,12 +264,12 @@ namespace cs126linkedlist {
 
     template<typename ElementType>
     typename LinkedList<ElementType>::iterator LinkedList<ElementType>::begin() {
-
+        return iterator(head_);
     }
 
     template<typename ElementType>
     typename LinkedList<ElementType>::iterator LinkedList<ElementType>::end() {
-
+        return iterator(tail_);
     }
 
     template<typename ElementType>
@@ -265,7 +279,7 @@ namespace cs126linkedlist {
 
     template<typename ElementType>
     const ElementType &LinkedList<ElementType>::const_iterator::operator*() const {
-
+        return current_->data_;
     }
 
     template<typename ElementType>
@@ -276,11 +290,11 @@ namespace cs126linkedlist {
 
     template<typename ElementType>
     typename LinkedList<ElementType>::const_iterator LinkedList<ElementType>::begin() const {
-
+        return const_iterator(head_);
     }
 
     template<typename ElementType>
     typename LinkedList<ElementType>::const_iterator LinkedList<ElementType>::end() const {
-
+        return const_iterator(tail_);
     }
 }

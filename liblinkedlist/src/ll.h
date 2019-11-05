@@ -20,6 +20,7 @@ namespace cs126linkedlist {
         LinkedListNode();
         LinkedListNode(ElementType data);
         LinkedListNode(ElementType data, LinkedListNode next);
+        bool operator!=(const LinkedListNode<ElementType> &node) const;
     };
 
     // Template linked list class
