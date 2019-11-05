@@ -75,14 +75,15 @@ namespace cs126linkedlist {
     }
 
     template<typename ElementType>
-    void LinkedList<ElementType>::push_front(ElementType value) {
+    void LinkedList<ElementType>::PushFront(ElementType value) {
         LinkedListNode<ElementType> *temp = new LinkedListNode<ElementType>(value,head_);
         head_ = temp;
         size_++;
+        delete temp;
     }
 
     template<typename ElementType>
-    void LinkedList<ElementType>::push_back(ElementType value) {
+    void LinkedList<ElementType>::PushBack(ElementType value) {
         LinkedListNode<ElementType> *temp = new LinkedListNode<ElementType>(value);
         if(head_ == NULL){
             head_ = temp;
@@ -91,21 +92,29 @@ namespace cs126linkedlist {
             tail_->next_ = temp;
             tail_ = tail_->next_;
         }
+        delete temp;
         size_++;
     }
 
     template<typename ElementType>
-    ElementType LinkedList<ElementType>::front() const {
+    ElementType LinkedList<ElementType>::front() const throw(exception){
+
+        if (head_ == NULL) {
+            throw exception();
+        }
         return head_->data_;
     }
 
     template<typename ElementType>
-    ElementType LinkedList<ElementType>::back() const {
+    ElementType LinkedList<ElementType>::back() const throw(exception){
+        if (tail_ == NULL) {
+            throw exception();
+        }
         return tail_->data_;
     }
 
     template<typename ElementType>
-    void LinkedList<ElementType>::pop_front() {
+    void LinkedList<ElementType>::PopFront() {
 
         if(head_ != NULL) {
             LinkedListNode<ElementType> *temp = head_;
@@ -116,7 +125,7 @@ namespace cs126linkedlist {
     }
 
     template<typename ElementType>
-    void LinkedList<ElementType>::pop_back() {
+    void LinkedList<ElementType>::PopBack() {
 
         if(head_ != NULL){
             if(head_->next_ == NULL){
@@ -135,6 +144,27 @@ namespace cs126linkedlist {
     }
 
     template<typename ElementType>
+    void LinkedList<ElementType>::Remove(LinkedListNode<ElementType> *node) {
+
+        if(head_ != NULL && node != NULL) {
+            if (head_ == node) {
+                PopFront();
+            } else {
+                LinkedListNode<ElementType> *current = head_;
+                LinkedListNode<ElementType> *temp;
+                while(current->next_ != NULL && current->next_ != node){
+                    current = current->next_;
+                }
+                if(current->next_ != NULL){
+                    temp = current->next_;
+                    current->next_ = temp->next_;
+                    delete temp;
+                }
+            }
+        }
+    }
+
+    template<typename ElementType>
     int LinkedList<ElementType>::size() const {
         return size_;
     }
@@ -145,10 +175,10 @@ namespace cs126linkedlist {
     }
 
     template<typename ElementType>
-    void LinkedList<ElementType>::clear() {
+    void LinkedList<ElementType>::Clear() {
 
         while(head_ != NULL){
-            pop_front();
+            PopFront();
         }
         size_ = 0;
     }
@@ -173,7 +203,7 @@ namespace cs126linkedlist {
 
         if(head_->next_ != NULL){
             LinkedListNode<ElementType> *current = head_;
-            LinkedListNode<ElementType> *previous = new LinkedListNode<ElementType>();
+            LinkedListNode<ElementType> *previous;
             int count = 0;
             while(current != NULL){
                 if(count % 2 == 0){
@@ -181,7 +211,8 @@ namespace cs126linkedlist {
                     current = current->next_;
                 }else {
                     previous->next_ = current->next_;
-                    
+                    delete current;
+                    current = previous->next_;
                 }
                 count ++;
             }
@@ -190,7 +221,11 @@ namespace cs126linkedlist {
 
     template<typename ElementType>
     bool LinkedList<ElementType>::operator==(const LinkedList<ElementType> &rhs) const {
+        if (size_ != rhs.size()){
+            return false;
+        }else if(head_ == NULL && rhs.front() == NULL) {
 
+        }
     }
 
     template<typename ElementType>

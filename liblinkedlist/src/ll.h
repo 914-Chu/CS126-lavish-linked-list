@@ -3,6 +3,9 @@
 
 #include <iostream>
 #include <vector>
+#include <exception>
+
+using namespace std;
 
 namespace cs126linkedlist {
 /*
@@ -19,14 +22,16 @@ namespace cs126linkedlist {
         LinkedListNode(ElementType data, LinkedListNode next);
     };
 
-
     // Template linked list class
     template<typename ElementType>
     class LinkedList {
     /*
      *  Declare any struct, class, or enum types you need to use here
      */
-
+    private:
+        int size_;
+        LinkedListNode<ElementType> *head_;
+        LinkedListNode<ElementType> *tail_;
     public:
         LinkedList();                                                   // Default constructor
         explicit LinkedList(const std::vector<ElementType> &values);    // Initilize from vector
@@ -38,21 +43,19 @@ namespace cs126linkedlist {
         LinkedList<ElementType> &operator=(const LinkedList<ElementType> &source);      // Copy assignment operator
         LinkedList<ElementType> &operator=(LinkedList<ElementType> &&source) noexcept;  // Move assignment operator
 
-        void push_front(ElementType value);         // Push value on front
-        void push_back(ElementType value);          // Push value on back
-        ElementType front() const;                  // Access the front value
-        ElementType back() const;                   // Access the back valueW
-        void pop_front();                           // remove front element
-        void pop_back();                            // remove back element
-        int size() const;                           // return number of elements
-        bool empty() const;                         // check if empty
-        void clear();                               // clear the contents
-        void RemoveOdd();                           // remove the odd elements from the list 0 indexed
+        void PushFront(ElementType value);                                       // Push value on front
+        void PushBack(ElementType value);                                        // Push value on back
+        ElementType front() const throw(exception);                       // Access the front value
+        ElementType back() const throw(exception);                        // Access the back valueW
+        void PopFront();                                                         // remove front element
+        void PopBack();                                                          // remove back element
+        void Remove(LinkedListNode<ElementType> *node);                          // remove element at the node
+        int size() const;                                                        // return number of elements
+        bool empty() const;                                                      // check if empty
+        void Clear();                                                            // clear the contents
+        void RemoveOdd();                                                        // remove the odd elements from the list 0 indexed
         bool operator==(const LinkedList<ElementType> &rhs) const;
-        int size_;
 
-        LinkedListNode<ElementType> *head_;
-        LinkedListNode<ElementType> *tail_;
         // iterator
         class iterator : std::iterator<std::forward_iterator_tag, ElementType> {
             LinkedListNode<ElementType> *current_;
@@ -94,6 +97,9 @@ namespace cs126linkedlist {
 
     template<typename ElementType>
     std::ostream &operator<<(std::ostream &os, const LinkedList<ElementType> &list);
+
+    template<typename ElementType>
+    bool operator!=(const LinkedList<ElementType> &lhs, const LinkedList<ElementType> &rhs);
 
 
 } // namespace cs126linkedlist
