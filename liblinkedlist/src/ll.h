@@ -9,6 +9,17 @@ namespace cs126linkedlist {
  *  Declare any struct, class, or enum types you need to use here
  */
 
+    //Linked List Node
+    template<typename ElementType>
+    struct LinkedListNode {
+        ElementType data_;
+        LinkedListNode* next_;
+        LinkedListNode();
+        LinkedListNode(ElementType data);
+        LinkedListNode(ElementType data, LinkedListNode next);
+    };
+
+
     // Template linked list class
     template<typename ElementType>
     class LinkedList {
@@ -38,20 +49,17 @@ namespace cs126linkedlist {
         void clear();                               // clear the contents
         void RemoveOdd();                           // remove the odd elements from the list 0 indexed
         bool operator==(const LinkedList<ElementType> &rhs) const;
+        int size_;
 
-        //Linked List Node
-        struct LinkedListNode {
-            ElementType data;
-            LinkedListNode* next;
-        };
-
+        LinkedListNode<ElementType> *head_;
+        LinkedListNode<ElementType> *tail_;
         // iterator
         class iterator : std::iterator<std::forward_iterator_tag, ElementType> {
-            LinkedListNode *current_;
+            LinkedListNode<ElementType> *current_;
         public:
             iterator() : current_(nullptr) {};
 
-            iterator(LinkedListNode *ptr) { current_ = ptr; };
+            iterator(LinkedListNode<ElementType> *ptr) { current_ = ptr; };
 
             iterator &operator++();
 
@@ -66,11 +74,11 @@ namespace cs126linkedlist {
 
         // const_iterator
         class const_iterator : std::iterator<std::forward_iterator_tag, ElementType> {
-            const LinkedListNode *current_;
+            const LinkedListNode<ElementType> *current_;
         public:
             const_iterator() : current_(nullptr) {};
 
-            const_iterator(LinkedListNode *ptr) { current_ = ptr; };
+            const_iterator(LinkedListNode<ElementType> *ptr) { current_ = ptr; };
 
             const_iterator &operator++();
 
