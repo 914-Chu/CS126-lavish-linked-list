@@ -34,14 +34,22 @@ TEST_CASE("LinkedList Constructors") {
     }
 
     SECTION("Copy constructor") {
-
+        vector<int> vec{1,2,3,4,5};
+        LinkedList<int> *list = new LinkedList<int>(vec);
+        LinkedList<int> *list1 = new LinkedList<int>(*list);
+        REQUIRE(list == list1);
     }
 
     SECTION("Move constructor") {
-
+        vector<int> vec{1,2,3,4,5};
+        LinkedList<int> *list = new LinkedList<int>(vec);
+        LinkedList<int> *list1(move(list));
+        REQUIRE(list->empty());
+        REQUIRE(list->size() == 5);
     }
 
     SECTION("Destructor") {
+
     }
 
     SECTION("Copy assignment operator") {
@@ -58,14 +66,21 @@ TEST_CASE("LinkedList methods") {
     vector<int> vec{1,2,3,4,5};
     LinkedList<int> *list = new LinkedList<int>(vec);
 
-    SECTION(" Push value on front / Access the front value") {
+    SECTION(" Push value on front") {
         list->PushFront(0);
         REQUIRE(list->front() == 0);
     }
 
-    SECTION("Push value on back / Access the back value") {
+    SECTION("Push value on back") {
         list->PushBack(6);
         REQUIRE(list->back() == 6);
+    }
+
+    SECTION(" Access the front/back value") {
+        LinkedList<int> *list1 = new LinkedList<int>();
+        REQUIRE_THROWS_AS(list1->front(),exception);
+        REQUIRE_THROWS_AS(list1->back(),exception);
+
     }
 
     SECTION("remove front element") {
@@ -112,7 +127,7 @@ TEST_CASE("LinkedList methods") {
 TEST_CASE("LinkedList Iterator"){
 
     SECTION("Default constructor") {
-
+        LinkedList<int>::const_iterator cit;
     }
 
     SECTION("Initialize constructor") {
