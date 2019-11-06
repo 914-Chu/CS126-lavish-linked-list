@@ -1,22 +1,36 @@
 #include "catch.hpp"
 #include "ll.h"
 
+using namespace std;
+using namespace cs126linkedlist;
 
 TEST_CASE("LinkedListNode") {
 
     SECTION("operator !=") {
-
+        LinkedListNode<int> *node1 = new LinkedListNode<int>(1);
+        LinkedListNode<int> *node2 = new LinkedListNode<int>(2);
+        REQUIRE(node1!=node2);
     }
 }
 
 TEST_CASE("LinkedList Constructors") {
 
     SECTION("Default constructor") {
-
+        LinkedList<int> *list = new LinkedList<int>();
+        REQUIRE(list->front() == NULL);
+        REQUIRE(list->back() == NULL);
+        REQUIRE(list->size() == 0);
     }
 
     SECTION("Initialize constructor") {
-
+        vector<int> vec{1,2,3,4,5};
+        LinkedList<int> *list = new LinkedList<int>(vec);
+        REQUIRE(list->front() == 1);
+        REQUIRE(list->get(1) == 2);
+        REQUIRE(list->get(2) == 3);
+        REQUIRE(list->get(3) == 4);
+        REQUIRE(list->back() == 5);
+        REQUIRE(list->size() == 5);
     }
 
     SECTION("Copy constructor") {
@@ -28,7 +42,6 @@ TEST_CASE("LinkedList Constructors") {
     }
 
     SECTION("Destructor") {
-
     }
 
     SECTION("Copy assignment operator") {
@@ -42,48 +55,57 @@ TEST_CASE("LinkedList Constructors") {
 
 TEST_CASE("LinkedList methods") {
 
-    SECTION(" Push value on front") {
+    vector<int> vec{1,2,3,4,5};
+    LinkedList<int> *list = new LinkedList<int>(vec);
 
+    SECTION(" Push value on front / Access the front value") {
+        list->PushFront(0);
+        REQUIRE(list->front() == 0);
     }
 
-    SECTION("Push value on back") {
-
-    }
-
-    SECTION("Access the front value") {
-
-    }
-
-    SECTION("Access the back valueW") {
-
+    SECTION("Push value on back / Access the back value") {
+        list->PushBack(6);
+        REQUIRE(list->back() == 6);
     }
 
     SECTION("remove front element") {
-
+        list->PopFront();
+        REQUIRE(list->front() == 1);
     }
 
     SECTION("remove back element") {
-
+        list->PopBack();
+        REQUIRE(list->back() == 5);
     }
 
     SECTION("remove element at the node") {
-
+        LinkedListNode<int> *node1 = new LinkedListNode<int>(3);
+        list->Remove(node1);
+        REQUIRE(list->get(2) == 4);
     }
 
     SECTION("return number of elements") {
-
+        REQUIRE(list->size() == 4);
     }
 
     SECTION("check if empty") {
-
+        REQUIRE(!list->empty());
     }
 
     SECTION("clear the contents") {
-
+        list->Clear();
+        REQUIRE(list->empty());
     }
 
     SECTION("remove the odd elements from the list 0 indexed") {
-
+        vector<int> vec{0,1,2,3,4,5,6};
+        LinkedList<int> *list1 = new LinkedList<int>(vec);
+        list1->RemoveOdd();
+        REQUIRE(list1->size() == 4);
+        REQUIRE(list->front() == 0);
+        REQUIRE(list->get(1) == 2);
+        REQUIRE(list->get(2) == 4);
+        REQUIRE(list->back() == 6);
     }
 }
 
@@ -145,12 +167,22 @@ TEST_CASE("LinkedList Const Iterator"){
 
 TEST_CASE("LinkedList external methods"){
 
-    SECTION("operator <<") {
+    vector<int> vec{0,1,2,3,4,5,6};
+    LinkedList<int> *list = new LinkedList<int>(vec);
+    vector<int> vec1{6,5,4,3,2,1,0};
+    LinkedList<int> *list1 = new LinkedList<int>(vec);
+    vector<int> vec2{0,1};
+    LinkedList<int> *list2 = new LinkedList<int>(vec);
+    LinkedList<int> *list3 = new LinkedList<int>();
 
+    SECTION("operator <<") {
+        cout << list << endl;
     }
 
     SECTION("operator !=") {
-
+        REQUIRE(list != list1);
+        REQUIRE(list != list2);
+        REQUIRE(list != list3);
     }
 
 }
