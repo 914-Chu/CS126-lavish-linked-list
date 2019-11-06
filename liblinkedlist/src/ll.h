@@ -36,7 +36,7 @@ namespace cs126linkedlist {
         void init();
     public:
         LinkedList();                                                   // Default constructor
-        explicit LinkedList(const std::vector<ElementType> &values);    // Initilize from vector
+        explicit LinkedList(const std::vector<ElementType> &values);    // Initialize from vector
 
         // Big 5
         LinkedList(const LinkedList &source);                                           // Copy constructor

@@ -89,13 +89,14 @@ namespace cs126linkedlist {
     template<typename ElementType>
     LinkedList<ElementType>::~LinkedList() {
 
-        LinkedListNode<ElementType> *current = head_;
-        LinkedListNode<ElementType> *temp;
-        while(current != nullptr) {
-            temp = current->next_;
-            delete current;
-            current = temp;
-        }
+//        LinkedListNode<ElementType> *current = head_;
+//        LinkedListNode<ElementType> *temp;
+//        while(current != nullptr) {
+//            temp = current->next_;
+//            delete current;
+//            current = temp;
+//        }
+        Clear();
     }
 
     // Copy assignment operator
@@ -113,7 +114,24 @@ namespace cs126linkedlist {
     LinkedList<ElementType> &LinkedList<ElementType>::operator=(LinkedList<ElementType> &&source) noexcept {
 
         if(this != source){
+            Clear();
+            init();
+            if(source.head_ != nullptr){
 
+                head_ = source.head_;
+                size_ = source.size_;
+                LinkedListNode<ElementType> *temp = source.begin().current();
+                LinkedListNode<ElementType> *current;
+                head_ = new LinkedListNode<ElementType>(temp->data_, nullptr);
+                current = head_;
+                temp = temp->next_;
+                while(temp != nullptr){
+                    current->next_ = new LinkedListNode<ElementType>(temp->data_, temp->next_);
+                    current = current->next_;
+                    tail_ = current;
+                    temp = temp->next_;
+                }
+            }
         }
     }
 
