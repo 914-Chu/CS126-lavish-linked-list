@@ -70,6 +70,8 @@ namespace cs126linkedlist {
             ElementType &operator*() const;
 
             bool operator!=(const iterator &other) const;
+
+            bool operator==(const iterator &other) const;
         };
 
         iterator begin();
@@ -89,6 +91,8 @@ namespace cs126linkedlist {
             const ElementType &operator*() const;
 
             bool operator!=(const const_iterator &other) const;
+
+            bool operator==(const const_iterator &other) const;
         };
 
         const_iterator begin() const;
