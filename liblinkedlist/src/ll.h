@@ -33,6 +33,7 @@ namespace cs126linkedlist {
         int size_;
         LinkedListNode<ElementType> *head_;
         LinkedListNode<ElementType> *tail_;
+        void init();
     public:
         LinkedList();                                                   // Default constructor
         explicit LinkedList(const std::vector<ElementType> &values);    // Initilize from vector

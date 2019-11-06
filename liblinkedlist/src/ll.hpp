@@ -8,7 +8,7 @@ namespace cs126linkedlist {
 
     template <typename ElementType>
     LinkedListNode<ElementType>::LinkedListNode() {
-        data_ = nullptr;
+        data_ = NULL;
         next_ = nullptr;
     }
 
@@ -30,14 +30,22 @@ namespace cs126linkedlist {
     }
 
     template<typename ElementType>
-    LinkedList<ElementType>::LinkedList() {
+    void LinkedList<ElementType>::init() {
         size_ = 0;
         head_ = new LinkedListNode<ElementType>();
-        tail_ = new LinkedList();
+        tail_ = new LinkedListNode<ElementType>();
+        head_->next_ = tail_;
+    }
+
+    template<typename ElementType>
+    LinkedList<ElementType>::LinkedList() {
+        init();
     }
 
     template<typename ElementType>
     LinkedList<ElementType>::LinkedList(const std::vector<ElementType> &values) {
+
+        init();
         size_ = values.size();
         for(int i = 0; i < values.size(); i++){
             push_back(values[i]);
@@ -52,30 +60,61 @@ namespace cs126linkedlist {
         }
 
         LinkedListNode<ElementType> *temp = source.begin().current();
+        LinkedListNode<ElementType> *current;
+        head_ = new LinkedListNode<ElementType>(temp->data_, nullptr);
+        current = head_;
+        temp = temp->next_;
+        while(temp != nullptr){
+            current->next_ = new LinkedListNode<ElementType>(temp->data_, temp->next_);
+            current = current->next_;
+            tail_ = current;
+            temp = temp->next_;
+        }
     }
 
     // Move constructor
     template<typename ElementType>
     LinkedList<ElementType>::LinkedList(LinkedList<ElementType> &&source) noexcept {
 
+        init();
+        size_ = source.size_;
+        head_ = source.head_;
+        tail_ = source.tail_;
+        source.head_ = nullptr;
+        source.tail_ = nullptr;
+        source.size_ = 0;
     }
 
     // Destructor
     template<typename ElementType>
     LinkedList<ElementType>::~LinkedList() {
 
+        LinkedListNode<ElementType> *current = head_;
+        LinkedListNode<ElementType> *temp;
+        while(current != nullptr) {
+            temp = current->next_;
+            delete current;
+            current = temp;
+        }
     }
 
     // Copy assignment operator
     template<typename ElementType>
     LinkedList<ElementType> &LinkedList<ElementType>::operator=(const LinkedList<ElementType> &source) {
 
+        head_ = source.head_;
+        tail_ = source.tail_;
+        size_ = source.size_;
+        return *this;
     }
 
     // Move assignment operator
     template<typename ElementType>
     LinkedList<ElementType> &LinkedList<ElementType>::operator=(LinkedList<ElementType> &&source) noexcept {
 
+        if(this != source){
+
+        }
     }
 
     template<typename ElementType>
