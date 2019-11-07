@@ -19,7 +19,7 @@ namespace cs126linkedlist {
         LinkedListNode* next_;
         LinkedListNode();
         LinkedListNode(ElementType data);
-        LinkedListNode(ElementType data, LinkedListNode next);
+        LinkedListNode(ElementType data, LinkedListNode<ElementType>* next);
         bool operator!=(const LinkedListNode<ElementType> &node) const;
     };
 
@@ -33,7 +33,7 @@ namespace cs126linkedlist {
         int size_;
         LinkedListNode<ElementType> *head_;
         LinkedListNode<ElementType> *tail_;
-        void init();
+
     public:
         LinkedList();                                                   // Default constructor
         explicit LinkedList(const std::vector<ElementType> &values);    // Initialize from vector
@@ -47,16 +47,17 @@ namespace cs126linkedlist {
 
         void PushFront(ElementType value);                                       // Push value on front
         void PushBack(ElementType value);                                        // Push value on back
-        ElementType front() const throw(exception);                       // Access the front value
-        ElementType back() const throw(exception);                        // Access the back valueW
+        ElementType front() const noexcept(false);                       // Access the front value
+        ElementType back() const noexcept(false);                        // Access the back valueW
         void PopFront();                                                         // remove front element
         void PopBack();                                                          // remove back element
-        void Remove(LinkedListNode<ElementType> *node);                          // remove element at the node
         int size() const;                                                        // return number of elements
         bool empty() const;                                                      // check if empty
         void Clear();                                                            // clear the contents
         void RemoveOdd();                                                        // remove the odd elements from the list 0 indexed
         bool operator==(const LinkedList<ElementType> &rhs) const;
+        ElementType GetElementAt(int index);                                     // Get element at index
+        void init();
 
         // iterator
         class iterator : std::iterator<std::forward_iterator_tag, ElementType> {
@@ -80,7 +81,7 @@ namespace cs126linkedlist {
         iterator end();
 
         // const_iterator
-        class const_iterator : std::iterator<std::forward_iterator_tag, ElementType> {
+        class const_iterator : std::iterator<std::forward_iterator_tag, const ElementType> {
             const LinkedListNode<ElementType> *current_;
         public:
             const_iterator() : current_(nullptr) {};

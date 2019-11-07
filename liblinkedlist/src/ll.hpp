@@ -1,5 +1,6 @@
 #include <utility>
 #include <cassert>
+#include <iostream>
 #include "ll.h"
 
 using namespace std;
@@ -19,7 +20,7 @@ namespace cs126linkedlist {
     }
 
     template <typename ElementType>
-    LinkedListNode<ElementType>::LinkedListNode(ElementType data, LinkedListNode next) {
+    LinkedListNode<ElementType>::LinkedListNode(ElementType data, LinkedListNode<ElementType>* next) {
         data_ = data;
         next_ = next;
     }
@@ -32,9 +33,8 @@ namespace cs126linkedlist {
     template<typename ElementType>
     void LinkedList<ElementType>::init() {
         size_ = 0;
-        head_ = new LinkedListNode<ElementType>();
-        tail_ = new LinkedListNode<ElementType>();
-        head_->next_ = tail_;
+        head_ = nullptr;
+        tail_ = nullptr;
     }
 
     template<typename ElementType>
@@ -46,29 +46,24 @@ namespace cs126linkedlist {
     LinkedList<ElementType>::LinkedList(const std::vector<ElementType> &values) {
 
         init();
-        size_ = values.size();
-        for(int i = 0; i < values.size(); i++){
-            push_back(values[i]);
+        for(ElementType element : values){
+            PushBack(element);
         }
     }
 
     // Copy constructor
     template<typename ElementType>
     LinkedList<ElementType>::LinkedList(const LinkedList<ElementType> &source) {
-        if(source == nullptr) {
-            return;
-        }
 
-        LinkedListNode<ElementType> *temp = source.begin().current();
-        LinkedListNode<ElementType> *current;
-        head_ = new LinkedListNode<ElementType>(temp->data_, nullptr);
-        current = head_;
-        temp = temp->next_;
-        while(temp != nullptr){
-            current->next_ = new LinkedListNode<ElementType>(temp->data_, temp->next_);
-            current = current->next_;
-            tail_ = current;
-            temp = temp->next_;
+        if(source.head_ != nullptr) {
+            init();
+            LinkedListNode<ElementType> *temp = source.head_;
+            while (temp != nullptr) {
+                PushBack(temp->data_);
+                tail_ = temp;
+                temp = temp->next_;
+            }
+            size_ = source.size();
         }
     }
 
@@ -76,36 +71,28 @@ namespace cs126linkedlist {
     template<typename ElementType>
     LinkedList<ElementType>::LinkedList(LinkedList<ElementType> &&source) noexcept {
 
-        init();
-        size_ = source.size_;
-        head_ = source.head_;
-        tail_ = source.tail_;
-        source.head_ = nullptr;
-        source.tail_ = nullptr;
-        source.size_ = 0;
+        if(source.begin() != nullptr) {
+            init();
+            head_ = source.head_;
+            tail_ = source.tail_;
+            size_ = source.size();
+        }
+        source.init();
     }
 
     // Destructor
     template<typename ElementType>
     LinkedList<ElementType>::~LinkedList() {
 
-//        LinkedListNode<ElementType> *current = head_;
-//        LinkedListNode<ElementType> *temp;
-//        while(current != nullptr) {
-//            temp = current->next_;
-//            delete current;
-//            current = temp;
-//        }
         Clear();
+        cout << "destructor called" << endl;
     }
 
     // Copy assignment operator
     template<typename ElementType>
     LinkedList<ElementType> &LinkedList<ElementType>::operator=(const LinkedList<ElementType> &source) {
 
-        head_ = source.head_;
-        tail_ = source.tail_;
-        size_ = source.size_;
+        this(source);
         return *this;
     }
 
@@ -113,26 +100,16 @@ namespace cs126linkedlist {
     template<typename ElementType>
     LinkedList<ElementType> &LinkedList<ElementType>::operator=(LinkedList<ElementType> &&source) noexcept {
 
-        if(this != source){
+        if(*this != source){
             Clear();
-            init();
             if(source.head_ != nullptr){
-
                 head_ = source.head_;
-                size_ = source.size_;
-                LinkedListNode<ElementType> *temp = source.begin().current();
-                LinkedListNode<ElementType> *current;
-                head_ = new LinkedListNode<ElementType>(temp->data_, nullptr);
-                current = head_;
-                temp = temp->next_;
-                while(temp != nullptr){
-                    current->next_ = new LinkedListNode<ElementType>(temp->data_, temp->next_);
-                    current = current->next_;
-                    tail_ = current;
-                    temp = temp->next_;
-                }
+                tail_ = source.tail_;
+                size_= source.size();
             }
         }
+        source.init();
+        return *this;
     }
 
     template<typename ElementType>
@@ -153,23 +130,22 @@ namespace cs126linkedlist {
             tail_->next_ = temp;
             tail_ = tail_->next_;
         }
-        delete temp;
         size_++;
     }
 
     template<typename ElementType>
-    ElementType LinkedList<ElementType>::front() const throw(exception){
+    ElementType LinkedList<ElementType>::front() const noexcept(false){
 
         if (head_ == nullptr) {
-            throw exception();
+            throw std::runtime_error("Empty list");
         }
         return head_->data_;
     }
 
     template<typename ElementType>
-    ElementType LinkedList<ElementType>::back() const throw(exception){
+    ElementType LinkedList<ElementType>::back() const noexcept(false){
         if (tail_ == nullptr) {
-            throw exception();
+            throw std::runtime_error("Empty list");
         }
         return tail_->data_;
     }
@@ -204,26 +180,6 @@ namespace cs126linkedlist {
         }
     }
 
-    template<typename ElementType>
-    void LinkedList<ElementType>::Remove(LinkedListNode<ElementType> *node) {
-
-        if(head_ != nullptr && node != nullptr) {
-            if (head_ == node) {
-                PopFront();
-            } else {
-                LinkedListNode<ElementType> *current = head_;
-                LinkedListNode<ElementType> *temp;
-                while(current->next_ != nullptr && current->next_ != node){
-                    current = current->next_;
-                }
-                if(current->next_ != nullptr){
-                    temp = current->next_;
-                    current->next_ = temp->next_;
-                    delete temp;
-                }
-            }
-        }
-    }
 
     template<typename ElementType>
     int LinkedList<ElementType>::size() const {
@@ -247,16 +203,15 @@ namespace cs126linkedlist {
     template<typename ElementType>
     std::ostream &operator<<(std::ostream &os, const LinkedList<ElementType> &list) {
 
-        if(list.head_ == nullptr){
+        if(list.begin() == nullptr){
             os << "The list is empty." << endl;
         }else {
-            LinkedListNode<ElementType> *current = list->head_;
-            for(int i = 0; i < list.size_-1; i++){
-                os << current->data_ << ",";
-                current = current->next_;
+            for(typename LinkedList<ElementType>::const_iterator itr = list.begin(); itr != list.end(); ++itr){
+                os << *itr << " ";
             }
-            os << current->data_ << ".";
+
         }
+        return os;
     }
 
     template<typename ElementType>
@@ -273,6 +228,7 @@ namespace cs126linkedlist {
                 }else {
                     previous->next_ = current->next_;
                     delete current;
+                    size_ --;
                     current = previous->next_;
                 }
                 count ++;
@@ -284,7 +240,7 @@ namespace cs126linkedlist {
     bool LinkedList<ElementType>::operator==(const LinkedList<ElementType> &rhs) const {
         if (size_ != rhs.size()){
             return false;
-        }else if(head_ == nullptr && rhs.front() == nullptr) {
+        }else if(head_ == nullptr && rhs.begin() == nullptr) {
             return true;
         }else{
             const_iterator this_list = this->begin();
@@ -293,23 +249,31 @@ namespace cs126linkedlist {
                 if(this_list != other_list){
                     return false;
                 }
-                this_list++;
-                other_list++;
+                ++this_list;
+                ++other_list;
             }
             return true;
         }
     }
 
     template<typename ElementType>
-    bool operator!=(const LinkedList<ElementType> &lhs, const LinkedList<ElementType> &rhs) {
-        auto lhs_itr = lhs.begin();
-        auto rhs_itr = rhs.begin();
+    ElementType LinkedList<ElementType>::GetElementAt(int index) {
 
-        while(lhs_itr != lhs.end() && rhs_itr != lhs.end() && lhs_itr == rhs_itr) {
-            lhs_itr++;
-            rhs_itr++;
+        LinkedListNode<ElementType> *current = head_;
+        int count = 0;
+        while(current != nullptr) {
+            if(count == index) {
+                return current->data_;
+            }
+            count++;
+            current = current->next_;
         }
-        return lhs_itr == lhs.end();
+    }
+
+    template<typename ElementType>
+    bool operator!=(const LinkedList<ElementType> &lhs, const LinkedList<ElementType> &rhs) {
+
+        return !(lhs ==  rhs);
     }
 
     template<typename ElementType>
@@ -343,7 +307,7 @@ namespace cs126linkedlist {
 
     template<typename ElementType>
     typename LinkedList<ElementType>::iterator LinkedList<ElementType>::end() {
-        return iterator(tail_);
+        return iterator(nullptr);
     }
 
     template<typename ElementType>
@@ -378,6 +342,6 @@ namespace cs126linkedlist {
 
     template<typename ElementType>
     typename LinkedList<ElementType>::const_iterator LinkedList<ElementType>::end() const {
-        return const_iterator(tail_);
+        return const_iterator(nullptr);
     }
 }
